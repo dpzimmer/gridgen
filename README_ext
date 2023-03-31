@@ -1,0 +1,14 @@
+This fork of NOAA-EMC/gridgen is based upon code developed at Baird & Associates which has been 
+placed into the public domain as-is, with the authorizations of Baird staff members Douglas Scott 
+(Principal) and Don Zimmer (Associate Pricinpal) on 2023-03-31.
+
+This fork adds functionality by the addition of added functions using the 'ext_' prefix, as well as 
+any required adjusments or patches to the existing code.  The main function being 'ext_create_grid'.
+
+## Status
+
+2023-03-31 - initial commit of scavenged in-house code.
+           - only superficial testing performed.
+           - overal review required.
+           - assessment of recent changes in NOAA create_grid required.
+
