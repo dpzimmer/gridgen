@@ -283,6 +283,7 @@ depth_base = depth_base_tmp;
 
 itmp_prev = 0;
 Nb = Nx*Ny;
+den = dx_base*dy_base; %DPZ - calculate denominator for interpolation just once
 
 fprintf(1,'Generating grid bathymetry ....\n');
 
@@ -296,14 +297,7 @@ for j = 1:Nx
     
         %@@@ Interpolating from base grid
         
-            den = dx_base*dy_base;
-%            [lon_prev,~] = min(abs(lon_base-x(k,j)));
-%For very fine grids
-            [lon_prev,tmp] = min(abs(lon_base-x(k,j)));
-            if ( round(lon_prev) == 0 )
-              lon_prev = tmp-1;
-            end;
-%
+            [~,lon_prev] = min(abs(lon_base-x(k,j))); %DPZ - patch
             if ( lon_base(lon_prev) > x(k,j) )
                 lon_prev = lon_prev - 1;
             end;
@@ -314,13 +308,8 @@ for j = 1:Nx
             if (lon_next > Nx_base)
                 lon_next = 2;
             end;
-%            [lat_prev,~] = min(abs(lat_base-y(k,j)));
-%For very fine grids
-             [lat_prev,tmp] = min(abs(lat_base-y(k,j)));
-             if ( round(lat_prev) == 0 )
-               lat_prev = tmp-1;
-             end;
-%            
+
+            [~,lat_prev] = min(abs(lat_base-y(k,j))); %DPZ - patch
             if ( lat_base(lat_prev) > y(k,j) )
                 lat_prev = lat_prev - 1;
             end;
@@ -404,7 +393,7 @@ for j = 1:Nx
             depth_tmp_incell = depth_tmp(in_cell > 0);
             Nt = numel(depth_tmp_incell);
             clear loc;
-            loc = find(depth_tmp_incell <= cut_off);
+            loc = find(depth_tmp_incell < cut_off); %DPZ - patch
             if (~isempty(loc))
                 Ntt = length(loc);
                 if (Ntt/Nt > limit)
