@@ -223,18 +223,23 @@ end;  %@@@ End of while new_mask loop.
 
 mask_mod = mask;
 
-if (lake_tol < 0)                    
-    [~,pos] = max(N1);
-    for i = 1:last_mask
-        if (i ~= pos)
-            loc = mask_map == i;
+if (lake_tol < 0)
+
+    %DPZ - modified to allow masking out all but the largest 'n' water bodies
+    nkeep = min(abs(lake_tol),last_mask);
+    nremove = last_mask - nkeep;
+    if nremove
+        [~,pos] = sort(N1,'ascend');
+        for i = 1:nremove
+            loc = mask_map == pos(i);
             mask_mod(loc) = 0;
             fprintf(1,'Masking out cells with flag set to %d\n',i);
             clear loc;
         end;
     end;
 
-else                                 
+else
+
     for i = 1:last_mask
         if (N1(i) < lake_tol)
             loc = mask_map == i;
