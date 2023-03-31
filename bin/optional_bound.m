@@ -55,7 +55,7 @@ end;
 fclose(fid);
 
 if (usr_cnt == 0)
-  b(1) = -1;
-end;
+  b = struct([]); % DPZ revise empty return value
+end
 
 return

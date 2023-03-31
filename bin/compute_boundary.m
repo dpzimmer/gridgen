@@ -132,7 +132,7 @@ for i = 1:N
     %@@@ changed if interested in other boundaries. See GSHHS documentation 
     %@@@ for boundary type flags
    
-    if (bound(i).level == bflg )
+    if (bound(i).level <= bflg) % DPZ revision from (bound(i).level == bflg)
                                                      
         %@@@ Determine if boundary lies completely outside the domain
         
@@ -207,6 +207,7 @@ for i = 1:N
                         bound_ingrid(in_coord).height = lon_end - lon_start;
                         bound_ingrid(in_coord).width = lat_end - lat_start;
                         bound_ingrid(in_coord).level = lev1;
+                        bound_ingrid(in_coord).index = i; %DPZ for later extraction
                         in_coord = in_coord + 1;
                     end;
                     clear loc_t domain_inb;
@@ -745,6 +746,7 @@ for i = 1:N
                             bound_ingrid(in_coord).width = bound_ingrid(in_coord).east ...
                                             - bound_ingrid(in_coord).west;
                             bound_ingrid(in_coord).level = lev1;
+                            bound_ingrid(in_coord).index = i; %DPZ for later extraction
                                                        
                             in_coord=in_coord+1;    %@@@ increment boundary 
                                                     %@@@ counter                                                                       
@@ -785,6 +787,7 @@ for i = 1:N
                 bound_ingrid(in_coord).width = bound_ingrid(in_coord).east ...
                     - bound_ingrid(in_coord).west;
                 bound_ingrid(in_coord).level = lev1;
+                bound_ingrid(in_coord).index = i; %DPZ for later extraction
                 in_coord = in_coord+1;
 
             end;     %@@@ corresponds to if statement that determines if boundary 
@@ -809,7 +812,7 @@ end;     %@@@ end of for loop that loops through all the GSHHS boundaries
 Nb = in_coord-1;
 
 if (Nb == 0)
-    bound_ingrid(1) = -1;
-end;
+    bound_ingrid = struct([]); % DPZ revise empty return value
+end
 
 return;
