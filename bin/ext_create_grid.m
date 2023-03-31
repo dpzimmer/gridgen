@@ -6,7 +6,7 @@ function ext_create_grid(fname, lon, lat, varargin)
   ref_grid = 'etopo1';  % reference grid source 
   boundary = 'full';    % option to determine which GSHHS.mat file to load
   user_poly = '';       % file with switches for using user defined polygons
-  land_val = 0.0;       % bathymetry level indicating wet dry cells, all values below this level are considered wet
+  land_val = 0.0;       % bathymetry level indicating dry cells, all values below this level are considered wet
   dry_val = 999999;     % depth value for dry cells (can change as desired)
   poly_thresh = 0.5;    % (0.5) Fraction of cell that has to be inside a polygon for cell to be marked dry
   wet_thresh = 0.1;     % (0.1) Proportion of base bathymetry cells that need to be wet for the target cell to be considered wet. 

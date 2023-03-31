@@ -9,7 +9,7 @@ tic;
 lon = (105.60 : 0.2 : 135.20);
 lat = (  3.20 : 0.2 :  44.00);
 [lon, lat] = meshgrid(lon, lat);
-ext_create_grid('taiwan_12min',lon,lat);
+ext_create_grid('taiwan_12min',lon,lat,'out_dir','./output');
 toc;
 
 % Lake	Chart Datum 
@@ -20,7 +20,7 @@ toc;
 % StClair	174.4
 % Huron	176
 
-% generate using custom topo and polys
+% generate using custom topo and polys (reference_data not yet available for fork)
 % tic;
 % lon = (276.50 : 0.02 : 281.16);
 % lat = ( 41.36 : 0.02 :  42.92);

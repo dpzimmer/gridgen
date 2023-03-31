@@ -7,3 +7,4 @@
 *.bot
 *.png
 *.fig
+outdir/

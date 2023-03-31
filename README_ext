@@ -10,5 +10,6 @@ any required adjustments or patches to the existing code... the main new functio
 2023-03-31 - initial commit of scavenged in-house code.
            - only superficial testing performed.
            - overall review required.
-           - assessment of recent changes in NOAA generate_grid required.
+           - revisit wet-point-only interpolation/averaging as an option, and document rationale.
+           - TODO: inherently handle grids requested in negative longitude ranges.
 

@@ -224,7 +224,10 @@
   d2 = round((sy1)*obstr_scale);
   write_ww3obstr([out_dir,'/',fname,'.obstr_lev1'],d1,d2);            
 
-  write_ww3meta([out_dir,'/',fname],lon,lat,1/depth_scale,...
+  %DPZ
+  gtyp = 'RECT';
+  [glon, glat] = meshgrid(lon,lat);
+  write_ww3meta([out_dir,'/',fname],gtyp,glon,glat,1/depth_scale,...
                                   1/obstr_scale);          
 
 % 6. Vizualization (this part can be commented out if resources are limited)
