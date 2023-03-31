@@ -1,0 +1,9 @@
+*.depth_ascii
+*.maskorig_ascii
+*.obstr_lev1
+*.meta
+*.msk
+*.obs
+*.bot
+*.png
+*.fig
