@@ -1,6 +1,6 @@
 function depth_sub = ext_apply_refgrid(x,y,ref_dir,bathy_source,wet_thresh,land_val,dry_val,varargin)
 
-  %% ext_apply_refgrid() is the baird replacment for generate_grid()
+  %% ext_apply_refgrid() is an extended replacement replacment for generate_grid()
   %  this seamlessly handles global/regional grid generation and any input 
   %  netcdf DEM (global or regional). 
 
