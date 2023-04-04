@@ -135,11 +135,16 @@ if any(strcmp(tests, 'span'))
   
   lo = readmatrix([wst '.bot'], 'FileType', 'text');
   hi = readmatrix([est '.bot'], 'FileType', 'text');
-  write_ww3file([out '.bot'], horzcat(lo, hi));
-  
+  wad = horzcat(lo, hi);
+  write_ww3file([out '.bot'], wad);
+  wad(wad > 0) = 0;
+  ext_write_grid(lon, lat, wad, 'british_isles_03min_sgn', 'bathy', './output'); % in-house format
+
   lo = readmatrix([wst '.msk'], 'FileType', 'text');
   hi = readmatrix([est '.msk'], 'FileType', 'text');
-  write_ww3file([out '.msk'], horzcat(lo, hi));
+  wad = horzcat(lo, hi);
+  write_ww3file([out '.msk'], wad);
+  ext_write_grid(lon, lat, wad, 'british_isles_03min_sgn', 'mask', './output'); % in-house format
   
   lo = readmatrix([wst '.obs'], 'FileType', 'text');
   hi = readmatrix([est '.obs'], 'FileType', 'text');

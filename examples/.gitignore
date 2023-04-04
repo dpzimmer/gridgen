@@ -9,4 +9,5 @@
 *.fig
 outdir/
 *.asv
+*.fd
 
