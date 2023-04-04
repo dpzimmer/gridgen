@@ -8,3 +8,5 @@
 *.png
 *.fig
 outdir/
+*.asv
+

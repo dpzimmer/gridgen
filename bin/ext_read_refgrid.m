@@ -110,6 +110,8 @@ function [lon, lat, dep] = ext_read_refgrid(x,y,fname_base,var_x,var_y,var_z,off
   % done with these here
   clear lon_base lat_base nx_base ny_base dx_base dy_base;
   
+  % DPZ 2023-04-04 - noticed that below assertions look suspect... to review
+  
   % determine chunks to read from netcdf
   lat_used = lat_map > 0;
   assert(numel(lat_used) > 0, 'latitude range not covered by reference topography'); 
@@ -140,8 +142,8 @@ function [lon, lat, dep] = ext_read_refgrid(x,y,fname_base,var_x,var_y,var_z,off
     if is_flipped_base
       dep_base = flipud(dep_base);
     end
-    west = lon_start(1);
-    east = lon_start(1) + lon_count - 1;
+    west = lon_start(idx);
+    east = lon_start(idx) + lon_count(idx) - 1;
     map = lon_map >= west & lon_map <= east;
     if any(map)
       dep(y1:y2,map) = dep_base(:,1+lon_map(map)-west);

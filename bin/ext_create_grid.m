@@ -8,6 +8,8 @@ function ext_create_grid(fname, lon, lat, varargin)
   user_poly = '';       % file with switches for using user defined polygons
   land_val = 0.0;       % bathymetry level indicating dry cells, all values below this level are considered wet
   dry_val = 999999;     % depth value for dry cells (can change as desired)
+  wet_only = 1;         % only consider wet points in interpolation (can result in wet points > MSL)
+  wet_max = -0.1;       % enforce wet points are no greater than this elevation (when wet_only = 0)
   poly_thresh = 0.5;    % (0.5) Fraction of cell that has to be inside a polygon for cell to be marked dry
   wet_thresh = 0.1;     % (0.1) Proportion of base bathymetry cells that need to be wet for the target cell to be considered wet. 
   obstr_offset = 1;     % See documentation for create_obstr for details
@@ -29,6 +31,10 @@ function ext_create_grid(fname, lon, lat, varargin)
       user_poly = varargin{idx+1};
     elseif strcmp(varargin{idx}, 'land_val')
       land_val = varargin{idx+1};
+    elseif strcmp(varargin{idx}, 'wet_only')
+      wet_only = varargin{idx+1};
+    elseif strcmp(varargin{idx}, 'wet_max')
+      wet_max = varargin{idx+1};
     elseif strcmp(varargin{idx}, 'poly_thresh')
       poly_thresh = varargin{idx+1};
     elseif strcmp(varargin{idx}, 'wet_thresh')
@@ -81,20 +87,11 @@ function ext_create_grid(fname, lon, lat, varargin)
   end
   
   fprintf(1,'.........Creating Bathymetry..................\n'); 
-  depth = ext_apply_refgrid(lon,lat,ref_dir,ref_grid,wet_thresh,land_val,dry_val,vars{1},vars{2},vars{3});
+  depth = ext_apply_refgrid(lon,lat,ref_dir,ref_grid,wet_thresh,land_val,dry_val,wet_only,vars{1},vars{2},vars{3});
  
   % adjust to datum provided
   valid = depth ~= dry_val;
   depth(valid) = depth(valid) - land_val;
-  
-  % debug
-%   if lon(1) < 0
-%     figure(1);
-%     depth(depth == dry_val) = 0;
-%     imagesc(lon(1,:),lat(:,1),depth);
-%     set(gca,'YDir','normal'); colormap jet; colorbar;
-%     stop = 'here';
-%   end
   
   % Load boundary polygon inputs
   fprintf(1,'.........Reading Boundaries..................\n');
@@ -156,6 +153,11 @@ function ext_create_grid(fname, lon, lat, varargin)
   fprintf(1,'.........Separating Water Bodies..................\n');
   [m4,mask_map] = remove_lake(m3,lake_tol,glb);
 
+  % Cleanup for wet points interpolated above MSL
+  if ~wet_only
+    depth((m4 ~= 0) & (depth > wet_max)) = wet_max;
+  end
+
   % Generate sub - grid obstruction sets in x and y direction, based on 
   % the final land/sea mask and the coastal boundaries
   fprintf(1,'.........Creating Obstructions..................\n');
@@ -165,8 +167,6 @@ function ext_create_grid(fname, lon, lat, varargin)
   depth_scale = 1000;
   obstr_scale = 100;
 
-  % XXX - to check: are all masked out depths == dry, or do some still have values?
-  
   d = round(depth*depth_scale);
   write_ww3file([out_dir,'/',fname,'.bot'],d);                 
 
@@ -194,60 +194,29 @@ function ext_create_grid(fname, lon, lat, varargin)
     if any(strcmp(plot, 'depth'))
       tmp = depth; tmp(m4 == 0) = NaN;
       ifig = ifig+1;
-      figure(ifig); clf;
-      pcolor(lon,lat,tmp);
-      shading(gca,'flat'); %'interp');
-      colormap jet; colorbar;
-      set(gca,'fontsize',14);
-      title(['Bathymetry for ',fname],'fontsize',14,'Interpreter','none');
-      savefig([out_dir,'/',fname,'_depth.fig']);
-      daspect([1 1 1])
-      print('-r600',[out_dir,'/',fname,'_depth.png'], '-dpng');
+      ext_plot_grid(ifig, lon, lat, tmp, 'Bathymetry', fname, 'depth', out_dir);
     end
     
     if any(strcmp(plot, 'lake'))
       tmp = mask_map; tmp(mask_map == -1) = NaN;
       ifig = ifig+1;
-      figure(ifig); clf;
-      pcolor(lon,lat,tmp);
-      shading(gca,'flat');
-      colormap jet; colorbar;
-      set(gca,'fontsize',14);
-      title(['Different water bodies for ',fname],'fontsize',14,'Interpreter','none');
-      savefig([out_dir,'/',fname,'_lake.fig']);
+      ext_plot_grid(ifig, lon, lat, tmp, 'Different water bodies', fname, 'lake', out_dir);
     end
 
     if any(strcmp(plot, 'mask'))
       ifig = ifig+1;
       figure(ifig); clf;
-      pcolor(lon,lat,m4);
-      shading(gca,'flat');
-      colormap jet; colorbar;
-      set(gca,'fontsize',14);
-      title(['Land-Sea Mask for ',fname],'fontsize',14,'Interpreter','none');
-      savefig([out_dir,'/',fname,'_mask.fig']);
+      ext_plot_grid(ifig, lon, lat, m4, 'Land-Sea Mask', fname, 'mask', out_dir);
     end
 
     if any(strcmp(plot, 'obs'))
       tmp = sx1; tmp(m4 == 0) = NaN;
       ifig = ifig+1;
-      figure(ifig); clf;
-      pcolor(lon,lat,tmp);
-      shading(gca,'flat');
-      colormap jet; colorbar;
-      set(gca,'fontsize',14);
-      title(['Sx obstruction for ',fname],'fontsize',14,'Interpreter','none');
-      savefig([out_dir,'/',fname,'_obsX.fig']);
+      ext_plot_grid(ifig, lon, lat, tmp, 'Sx obstruction', fname, 'obsX', out_dir);
       
       tmp = sy1; tmp(m4 == 0) = NaN;
       ifig = ifig+1;
-      figure(ifig); clf;
-      pcolor(lon,lat,tmp);
-      shading(gca,'flat');
-      colormap jet; colorbar;
-      set(gca,'fontsize',14);
-      title(['Sx obstruction for ',fname],'fontsize',14,'Interpreter','none');
-      savefig([out_dir,'/',fname,'_obsY.fig']);
+      ext_plot_grid(ifig, lon, lat, tmp, 'Sy obstruction', fname, 'obsY', out_dir);
     end
     
     if any(strcmp(plot, 'poly'))

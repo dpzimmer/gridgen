@@ -1,4 +1,4 @@
-function depth_sub = ext_apply_refgrid(x,y,ref_dir,bathy_source,wet_thresh,land_val,dry_val,varargin)
+function depth_sub = ext_apply_refgrid(x,y,ref_dir,bathy_source,wet_thresh,land_val,dry_val,wet_only,varargin)
 
   %% ext_apply_refgrid() is an extended replacement replacment for generate_grid()
   %  this seamlessly handles global/regional grid generation and any input 
@@ -102,19 +102,19 @@ function depth_sub = ext_apply_refgrid(x,y,ref_dir,bathy_source,wet_thresh,land_
         se_wt = dy2*dx1;
         nw_wt = dy1*dx2;
         ne_wt = dx1*dy1;
-        if isnan(sw) || sw >= land_val || sw_wt <= eps('single')
+        if isnan(sw) || (sw >= land_val && wet_only) || sw_wt <= eps('single')
           sw_wt = 0;
           sw = 0; % to factor out NaN
         end
-        if isnan(se) || se >= land_val || se_wt <= eps('single')
+        if isnan(se) || (se >= land_val && wet_only) || se_wt <= eps('single')
           se_wt = 0;
           se = 0; % to factor out NaN
         end
-        if isnan(nw) || nw >= land_val || nw_wt <= eps('single')
+        if isnan(nw) || (nw >= land_val && wet_only) || nw_wt <= eps('single')
           nw_wt = 0;
           nw = 0; % to factor out NaN
         end
-        if isnan(ne) || ne >= land_val || ne_wt <= eps('single')
+        if isnan(ne) || (ne >= land_val && wet_only) || ne_wt <= eps('single')
           ne_wt = 0;
           ne = 0; % to factor out NaN
         end
