@@ -5,8 +5,10 @@ applies any required adjustments or patches to the existing code... the main new
 
 ## Status
 
-2023-04-04 - basic testing clomplete.
-           - TODO: document approaches taken in the extended functions.
+2023-04-04 - basic testing complete.
+
+TODO: document approaches taken in the extended functions.
+TODO: inline function documentation.
 
 ## Notes
 
@@ -14,5 +16,7 @@ applies any required adjustments or patches to the existing code... the main new
 
 **ext_read_refgrid.m** will extract from NetCDF DEMs in a flexible manner to cover a requested region.
 Longitude signedness and wrapping is accounted for and the returned DEM coordinates are suitably aligned 
-for direct interpolation to the target.
+for direct application to the target.  This approach uses more RAM than the original.
+
+**...**
 
