@@ -10,7 +10,7 @@ function depth_sub = ext_apply_refgrid(x,y,ref_dir,bathy_source,wet_thresh,land_
     var_y = 'lat';
     var_z = 'z';
   else
-    if nargin == 10
+    if nargin == 11
       %@@@ Extra 3 arguments define the lat, lon and depth var names
       var_x = varargin{1};
       var_y = varargin{2};
